@@ -1,0 +1,35 @@
+# GitHub CODEOWNERS file
+# This file defines code owners who must review changes to specific paths
+
+# Every PR requires at least one review from code owners
+# Assign reviewers automatically based on changed files
+
+# Agents module - requires review from agents team
+/agents/ @Aamirali7596
+
+# Backend API - requires review from backend team
+/backend/app/ @Aamirali7596
+/backend/models/ @Aamirali7596
+/backend/services/ @Aamirali7596
+/backend/core/ @Aamirali7596
+
+# Skills module - requires review from skills team
+/skills/ @Aamirali7596
+
+# Root configuration files
+README.md @Aamirali7596
+LICENSE @Aamirali7596
+pyproject.toml @Aamirali7596
+requirements.txt @Aamirali7596
+.env.example @Aamirali7596
+
+# Git configuration
+.gitignore @Aamirali7596
+.github/ @Aamirali7596
+
+# Scripts and hooks
+scripts/ @Aamirali7596
+hooks/ @Aamirali7596
+
+# Default: assign to project maintainer for any unowned files
+* @Aamirali7596

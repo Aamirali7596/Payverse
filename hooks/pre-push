@@ -1,0 +1,75 @@
+#!/bin/bash
+# Pre-push hook that runs comprehensive checks before pushing
+
+echo "🔍 Running pre-push checks..."
+
+# Get the remote branch being pushed
+REMOTE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Skip checks for certain branches if needed
+if [[ "$REMOTE_BRANCH" == "main" || "$REMOTE_BRANCH" == "develop" ]]; then
+  echo "⚠️  Pushing to protected branch. Extra checks will be run by CI/CD."
+
+  # Check if all tests pass locally before pushing to protected branches
+  echo "Running local test suite..."
+  cd backend
+
+  # Check formatting
+  echo "Checking code formatting with black..."
+  black --check --line-length=127 app/ 2>/dev/null
+  if [ $? -ne 0 ]; then
+    echo "❌ Code formatting issues detected. Run 'black app/' to fix."
+    echo "Or use: pre-commit install && pre-commit run --all-files"
+    exit 1
+  fi
+
+  # Type checking
+  echo "Running mypy type checks..."
+  mypy app/ --ignore-missing-imports 2>/dev/null
+  if [ $? -ne 0 ]; then
+    echo "❌ Type checking failed. Please fix type errors before pushing."
+    exit 1
+  fi
+
+  # Linting
+  echo "Running flake8 linter..."
+  flake8 app/ --count --select=E9,F63,F7,F82 --statistics 2>/dev/null
+  if [ $? -ne 0 ]; then
+    echo "❌ Linting errors detected. Please fix before pushing."
+    exit 1
+  fi
+
+  # Run tests
+  echo "Running test suite..."
+  pytest tests/ -v --tb=short
+  if [ $? -ne 0 ]; then
+    echo "❌ Tests failed. Please fix failing tests before pushing."
+    exit 1
+  fi
+
+  cd ..
+fi
+
+# Check for secrets in the changes
+echo "Scanning for secrets..."
+STAGED_CHANGES=$(git diff --cached --name-only)
+if echo "$STAGED_CHANGES" | grep -q '.env\|.env\.local\|config\.json\|secrets\.json'; then
+  echo "❌ Potential secret files detected in staging area."
+  echo "   Please check your .gitignore and unstage these files:"
+  echo "   git reset HEAD <file>"
+  exit 1
+fi
+
+# Check for console.log or debug statements
+if git diff --cached | grep -E 'console\.log|print\(|debugger|pdb\.set_trace' > /dev/null 2>&1; then
+  echo "⚠️  Debug statements detected:"
+  git diff --cached | grep -E 'console\.log|print\(|debugger|pdb\.set_trace' | head -10
+  echo "Consider removing these before pushing (y/n)?"
+  read -r response
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    echo "Please remove debug statements and try again."
+    exit 1
+  fi
+fi
+
+echo "✅ Pre-push checks passed!"

@@ -1,14 +1,83 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.venv/
+*.py[cod]
+*$py.class
+*.so
+.Python
 env/
 venv/
+.venv/
 *.egg-info/
 dist/
 build/
+eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg
+MANIFEST
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.*
+!.env.example
+
+# Secrets and keys
+*.pem
+*.key
+*.crt
+secrets/
+secret.json
+*.secret
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# Logs
+logs/
+*.log
+log/
+*.pid
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Cache
+.cache/
+*.tsbuildinfo
+.parcel-cache/
+
+# Temp files
+tmp/
+temp/
+*.tmp
+*.temp
 
 # Node
 node_modules/

@@ -1,0 +1,40 @@
+# <type>(<scope>): <subject>
+#
+# Types (required, pick one):
+#   feat      - New feature
+#   fix       - Bug fix
+#   docs      - Documentation only changes
+#   style     - Formatting, missing semi colons, etc; no code change
+#   refactor  - Code refactoring
+#   test      - Adding or updating tests
+#   chore     - Maintenance tasks, dependency updates, etc.
+#   perf      - Performance improvement
+#   ci        - CI/CD changes
+#   revert    - Revert a previous commit
+#
+# Scope (required):
+#   The part of the codebase affected (e.g., auth, api, db, ui, agents, backend, etc.)
+#
+# Subject (required, max 50 chars):
+#   Imperative mood: "Add" not "Added", "Fix" not "Fixed"
+#   No period at the end
+#   Be specific: "Fix login redirect loop" not "Fix bug"
+#
+# Body (optional):
+#   Explain *why* the change was made, not *what* changed.
+#   Include motivation, context, and any important details.
+#   Wrap at 72 characters.
+#
+# Footer (optional):
+#   - Breaking changes: "BREAKING-CHANGE: description"
+#   - Closes issues: "Closes #123, Closes #124"
+#   - Related issues: "Related to #123"
+#
+# Examples:
+#   feat(auth): add OAuth2 login support
+#   fix(api): handle null response in user endpoint
+#
+#   The API occasionally returns null for inactive users.
+#   Added null check and return 404 for such cases.
+#
+#   Closes #123
