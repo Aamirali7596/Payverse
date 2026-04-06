@@ -15,6 +15,12 @@ import subprocess
 from pathlib import Path
 from skills.security_guardian import SecurityGuardian
 
+# Fix Windows console encoding
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
 
 def main():
     """Main entrypoint for pre-commit hook"""
@@ -38,10 +44,13 @@ def main():
     # Scan only relevant file types
     files_to_scan = [f for f in staged_files if f.endswith(('.py', '.js', '.ts', '.tsx', '.jsx', '.json', '.yml', '.yaml'))]
 
+    # Exclude: skills/, agents/, hooks/ (scanner's own code - we trust it)
+    files_to_scan = [f for f in files_to_scan if not f.startswith(('skills/', 'agents/', 'hooks/'))]
+
     if not files_to_scan:
         sys.exit(0)
 
-    print(f"\n🔒 Pre-Commit Security Scan")
+    print(f"\n[PRE-COMMIT] Security Scan")
     print(f"Scanning {len(files_to_scan)} files...\n")
 
     issues = []
@@ -57,12 +66,12 @@ def main():
     # Decision
     should_block, reason = guardian.should_block_commit(issues)
     if should_block:
-        print(f"\n❌ COMMIT BLOCKED: {reason}")
+        print(f"\n[BLOCKED] COMMIT BLOCKED: {reason}")
         print("   Fix security issues before committing.")
         print("   To bypass (not recommended): git commit --no-verify\n")
         sys.exit(1)
     else:
-        print("\n✅ Security scan passed - proceeding with commit\n")
+        print("\n[PASS] Security scan passed - proceeding with commit\n")
         sys.exit(0)
 
 

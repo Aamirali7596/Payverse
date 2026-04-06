@@ -215,7 +215,7 @@ class SecurityGuardian:
         lines.append("")
 
         if not issues:
-            lines.append("✓ NO ISSUES FOUND")
+            lines.append("[PASS] NO ISSUES FOUND")
             return "\n".join(lines)
 
         for severity in SecurityIssue.SEVERITIES:

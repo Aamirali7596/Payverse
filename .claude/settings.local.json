@@ -9,7 +9,10 @@
       "Bash(git push:*)",
       "Bash(git checkout:*)",
       "Bash(git fetch:*)",
-      "Bash(python -m skills.security_guardian --scan backend --format text)"
+      "Bash(python -m skills.security_guardian --scan backend --format text)",
+      "Bash([ -d .git ])",
+      "Bash(cp hooks/pre-commit .git/hooks/)",
+      "Bash(git reset:*)"
     ]
   },
   "enabledPlugins": {
