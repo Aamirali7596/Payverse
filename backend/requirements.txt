@@ -18,7 +18,7 @@ ollama==0.1.7
 httpx[http2]==0.25.1
 
 # Security
-cryptography==41.0.7
+cryptography==46.0.6
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 
