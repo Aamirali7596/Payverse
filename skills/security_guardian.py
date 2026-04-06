@@ -57,6 +57,35 @@ class SecurityIssue:
 class SecurityGuardian:
     """Scan code for security issues with fintech focus"""
 
+    # Known-safe patterns that look like secrets but are not
+    # These include test credentials, placeholder values, and documentation examples
+    SAFE_PATTERNS = [
+        # Test/placeholder credentials
+        'any_password_works_in_sandbox',
+        'test_password',
+        'your_password_here',
+        'your_secret_here',
+        'CHANGE_ME',
+        'changeme',
+        'placeholder',
+        'dummy_secret',
+        'fake_key',
+        'example_secret',
+        'sk_live_YOUR_STRIPE_KEY',
+        'sk_test_YOUR_STRIPE_KEY',
+        'your_api_key_here',
+        '<your-api-key>',
+        '<api-key>',
+        'REPLACE_ME',
+        'INSERT_KEY_HERE',
+        # Test emails
+        'test@example.com',
+        'noreply@example.com',
+        'user@example.com',
+    ]
+
+    SAFE_SUFFIXES = ['works_in_sandbox', 'here', '_test', '_example', '_placeholder', '_demo']
+
     SECRET_PATTERNS = [
         (re.compile(r'(?:api[_-]?key|apikey|secret|token|password|passwd|pwd|credential)["\']?\s*[=:]\s*["\']([^"\']{8,})["\']', re.IGNORECASE), 'hardcoded-secret', 'Hardcoded API key or secret', 'Use environment variables'),
         (re.compile(r'(?:sk_live_|sk_test_|pk_live_|pk_test_|rk_live_|rk_test_)', re.IGNORECASE), 'stripe-key', 'Possible Stripe API key exposed', 'Move to STRIPE_* env vars'),
@@ -113,6 +142,13 @@ class SecurityGuardian:
 
         for line_num, line in enumerate(lines, start=1):
             line_stripped = line.strip()
+
+            # Skip lines with known-safe patterns
+            if any(safe.lower() in line_stripped.lower() for safe in self.SAFE_PATTERNS):
+                continue
+            # Skip lines with safe suffixes (e.g. password="xxx_test")
+            if any(line_stripped.lower().endswith(safe + "'") or line_stripped.lower().endswith(safe + '"') for safe in self.SAFE_SUFFIXES):
+                continue
 
             # Check secrets
             for pattern, rule_id, desc, rec in self.SECRET_PATTERNS:
