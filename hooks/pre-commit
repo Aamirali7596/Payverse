@@ -1,0 +1,18 @@
+#!/bin/bash
+# Pre-commit hook that runs the Pre-Commit Agent
+
+echo "🔒 Running Pre-Commit Security Agent..."
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(py|js|ts|tsx|jsx|json|yml|yaml)$')
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "No relevant files staged. Skipping security scan."
+  exit 0
+fi
+
+# Run Python agent
+python -m agents.pre_commit_agent
+
+# Agent will exit with code 1 if issues found
+exit $?
