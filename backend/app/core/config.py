@@ -3,14 +3,14 @@ from typing import List
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "PayVerse Tax MVP"
+    APP_NAME: str = "TaxionLab Tax MVP"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
 
-    DATABASE_URL: str = "sqlite+aiosqlite:///./payverse_tax_mvp.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./taxionlab_tax_mvp.db"
 
     HMRC_CLIENT_ID: str = ""
     HMRC_CLIENT_SECRET: str = ""

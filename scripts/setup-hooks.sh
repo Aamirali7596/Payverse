@@ -1,5 +1,5 @@
 #!/bin/bash
-# Setup git hooks for PayVerse project
+# Setup git hooks for TaxionLab project
 
 echo "Setting up pre-commit and pre-push hooks..."
 

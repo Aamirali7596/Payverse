@@ -1,4 +1,4 @@
-"""PayVerse Tax MVP - FastAPI Application"""
+"""TaxionLab Tax MVP - FastAPI Application"""
 
 import sys
 import io
@@ -13,7 +13,7 @@ from app.core.database import init_db, check_db_connection
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-    print("Starting PayVerse Tax MVP...")
+    print("Starting TaxionLab Tax MVP...")
     db_ok = await check_db_connection()
     if db_ok:
         await init_db()

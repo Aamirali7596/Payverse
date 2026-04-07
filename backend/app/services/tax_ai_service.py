@@ -1,4 +1,4 @@
-"""PayVerse Tax MVP - Services Layer"""
+"""TaxionLab Tax MVP - Services Layer"""
 
 import os
 import sys
