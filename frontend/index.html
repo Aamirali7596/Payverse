@@ -3,78 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaxionLab — AI Tax Automation</title>
+  <title>TaxionLab — AI Tax Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a0f;
-      --surface: #12121a;
-      --border: #1e1e2e;
-      --text: #e0e0e8;
-      --text-dim: #6b7280;
-      --accent: #22c55e;
-      --accent-glow: rgba(34, 197, 94, 0.15);
-      --gold: #f59e0b;
-      --red: #ef4444;
-      --blue: #3b82f6;
-      --purple: #8b5cf6;
+      --bg: #faf9f6;
+      --bg-elevated: #ffffff;
+      --bg-subtle: #f5f4f0;
+      --text-primary: #1a1a1a;
+      --text-secondary: #5a5a5a;
+      --text-tertiary: #8a8a8a;
+      --border: #e8e6e1;
+      --border-strong: #d4d1ca;
+      --accent: #1a5c3a;
+      --accent-soft: rgba(26, 92, 58, 0.08);
+      --gold: #b8960c;
+      --gold-soft: rgba(184, 150, 12, 0.08);
+      --red: #a83333;
+      --red-soft: rgba(168, 51, 51, 0.08);
+      --blue: #2a5a8c;
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
     body {
       font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      color: var(--text-primary);
+      line-height: 1.7;
       overflow-x: hidden;
     }
 
-    /* === ANIMATED BACKGROUND === */
-    .bg-mesh {
+    /* === SUBBLE BACKGROUND TEXTURE === */
+    .bg-grain {
       position: fixed;
       inset: 0;
       z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .bg-mesh::before {
-      content: '';
-      position: absolute;
-      width: 800px;
-      height: 800px;
-      top: -300px;
-      right: -200px;
-      background: radial-gradient(circle, rgba(34, 197, 94, 0.08) 0%, transparent 70%);
-      animation: floatOrb 20s ease-in-out infinite;
-    }
-
-    .bg-mesh::after {
-      content: '';
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      bottom: -200px;
-      left: -100px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
-      animation: floatOrb 25s ease-in-out infinite reverse;
-    }
-
-    @keyframes floatOrb {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      25% { transform: translate(60px, -40px) scale(1.1); }
-      50% { transform: translate(-30px, 60px) scale(0.95); }
-      75% { transform: translate(40px, 20px) scale(1.05); }
-    }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
       pointer-events: none;
     }
 
@@ -82,9 +58,13 @@
     .container {
       position: relative;
       z-index: 1;
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 32px;
+    }
+
+    .container--narrow {
+      max-width: 880px;
     }
 
     /* === NAV === */
@@ -94,411 +74,572 @@
       left: 0;
       right: 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
-      background: rgba(10, 10, 15, 0.8);
       border-bottom: 1px solid var(--border);
+      transition: all 0.4s var(--ease-out-expo);
+    }
+
+    nav.scrolled {
+      background: rgba(250, 249, 246, 0.92);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
     }
 
     .nav-inner {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 16px 24px;
+      padding: 0 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 72px;
     }
 
+    /* === LOGO - Fortune 500 style === */
     .logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.5px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 14px;
+      text-decoration: none;
     }
 
-    .logo-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+    .logo-mark {
+      position: relative;
+      width: 36px;
+      height: 36px;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
+    .logo-mark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .logo-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .logo-tagline {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-top: 3px;
     }
 
     .nav-links {
       display: flex;
-      gap: 24px;
+      gap: 36px;
       align-items: center;
     }
 
     .nav-links a {
-      color: var(--text-dim);
+      color: var(--text-secondary);
       text-decoration: none;
       font-size: 14px;
-      transition: color 0.2s;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.25s ease;
+      position: relative;
     }
 
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--ease-out-expo);
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { width: 100%; }
 
     .btn-primary {
       background: var(--accent);
-      color: #0a0a0f;
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 14px;
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.02em;
       text-decoration: none;
       border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s var(--ease-out-expo);
     }
 
     .btn-primary:hover {
-      background: #16a34a;
+      background: #144a2e;
       transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 6px 24px rgba(26, 92, 58, 0.2);
     }
+
+    .btn-primary::after { display: none !important; }
 
     /* === HERO === */
     .hero {
-      padding: 160px 0 80px;
+      padding: 200px 0 100px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle at center, var(--accent-soft) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 16px;
-      background: var(--accent-glow);
-      border: 1px solid rgba(34, 197, 94, 0.2);
+      padding: 7px 18px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(26, 92, 58, 0.12);
       border-radius: 100px;
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 32px;
+      margin-bottom: 48px;
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.2s;
+      animation: reveal 0.8s var(--ease-out-expo) forwards 0.15s;
     }
 
-    .badge-dot {
-      width: 6px;
-      height: 6px;
+    .badge-line {
+      width: 16px;
+      height: 1px;
       background: var(--accent);
-      border-radius: 50%;
+      opacity: 0.5;
     }
 
     .hero h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(36px, 6vw, 64px);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -2px;
-      margin-bottom: 20px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+      color: var(--text-primary);
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.4s;
+      animation: reveal 1s var(--ease-out-expo) forwards 0.3s;
     }
 
-    .hero h1 .accent {
-      background: linear-gradient(135deg, var(--accent), #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .hero h1 .em {
+      font-style: italic;
+      color: var(--accent);
     }
 
-    .hero p {
-      font-size: 18px;
-      color: var(--text-dim);
-      max-width: 560px;
-      margin: 0 auto 40px;
+    .hero .subhead {
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.6s;
+      animation: reveal 1s var(--ease-out-expo) forwards 0.5s;
     }
 
     .hero-actions {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       justify-content: center;
+      align-items: center;
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.8s;
+      animation: reveal 1s var(--ease-out-expo) forwards 0.65s;
     }
 
-    .btn-lg {
-      padding: 14px 32px;
-      font-size: 15px;
-    }
+    .btn-lg { padding: 14px 36px; font-size: 14px; }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      padding: 14px 32px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 15px;
-      border: 1px solid var(--border);
+    .btn-ghost {
+      background: none;
+      color: var(--text-secondary);
+      padding: 14px 24px;
+      font-weight: 400;
+      font-size: 14px;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: color 0.25s ease;
+      text-decoration: none;
     }
 
-    .btn-outline:hover {
-      border-color: var(--text-dim);
-      background: rgba(255, 255, 255, 0.03);
-    }
+    .btn-ghost:hover { color: var(--text-primary); }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* === METRICS BAR === */
+    /* === DIVIDER === */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border-strong);
+      margin: 80px auto;
+      opacity: 0;
+      animation: scaleX 0.8s var(--ease-out-expo) forwards 0.8s;
+    }
+
+    @keyframes scaleX {
+      from { opacity: 0; transform: scaleX(0); }
+      to { opacity: 1; transform: scaleX(1); }
+    }
+
+    /* === METRICS === */
     .metrics {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 1px;
       background: var(--border);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      margin: 60px 0;
+      margin-bottom: 120px;
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 1s;
+      animation: reveal 0.8s var(--ease-out-expo) forwards 1s;
     }
 
     .metric {
-      padding: 28px 24px;
-      background: var(--surface);
-      text-align: center;
+      padding: 40px 32px;
+      background: var(--bg-elevated);
+      text-align: left;
     }
 
-    .metric-value {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
+    .metric-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--text-primary);
+      letter-spacing: -1px;
     }
 
-    .metric-value.green { color: var(--accent); }
-    .metric-value.gold { color: var(--gold); }
-    .metric-value.blue { color: var(--blue); }
+    .metric-number .gold { color: var(--gold); }
 
-    .metric-label {
+    .metric-desc {
       font-size: 13px;
-      color: var(--text-dim);
-      margin-top: 4px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+      letter-spacing: 0.02em;
     }
 
     /* === SECTIONS === */
     .section {
-      padding: 60px 0;
-    }
-
-    .section-header {
-      margin-bottom: 40px;
+      padding: 80px 0 100px;
     }
 
     .section-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--border-strong);
     }
 
     .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -1px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 36px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      color: var(--text-primary);
     }
 
-    /* === CARDS GRID === */
-    .cards {
+    /* === FEATURE LIST === */
+    .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      transition: all 0.3s;
+    .feature {
+      padding: 36px 0 0;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      animation: reveal 0.7s var(--ease-out-expo) forwards;
     }
 
-    .card:hover {
-      border-color: rgba(34, 197, 94, 0.3);
-      transform: translateY(-2px);
-    }
+    .feature:nth-child(1) { animation-delay: 0.1s; }
+    .feature:nth-child(2) { animation-delay: 0.2s; }
+    .feature:nth-child(3) { animation-delay: 0.3s; }
+    .feature:nth-child(4) { animation-delay: 0.4s; }
 
-    .card-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
+    .feature-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-tertiary);
       margin-bottom: 16px;
     }
 
-    .card-icon.green { background: var(--accent-glow); color: var(--accent); }
-    .card-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--blue); }
-    .card-icon.gold { background: rgba(245, 158, 11, 0.1); color: var(--gold); }
-    .card-icon.purple { background: rgba(139, 92, 246, 0.1); color: var(--purple); }
-
-    .card h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 17px;
+    .feature h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
     }
 
-    .card p {
+    .feature p {
       font-size: 14px;
-      color: var(--text-dim);
-      line-height: 1.6;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 380px;
     }
 
-    /* === DASHBOARD MOCKUP === */
-    .dashboard {
-      background: var(--surface);
+    /* === DASHBOARD PREVIEW === */
+    .preview {
+      background: var(--bg-elevated);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 20px;
       overflow: hidden;
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 1.2s;
+      animation: reveal 0.8s var(--ease-out-expo) forwards 0.1s;
     }
 
-    .dashboard-bar {
-      padding: 12px 20px;
+    .preview:hover {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      transition: box-shadow 0.4s ease;
+    }
+
+    .preview-header {
+      padding: 20px 28px;
       border-bottom: 1px solid var(--border);
       display: flex;
-      gap: 6px;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
+    .preview-header-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      font-weight: 600;
     }
 
-    .dot.red { background: #ff5f57; }
-    .dot.yellow { background: #ffbd2e; }
-    .dot.green { background: #28c840; }
+    .preview-header-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
 
-    .dashboard-body {
-      padding: 32px;
+    .preview-body {
       display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 32px;
-      min-height: 400px;
+      grid-template-columns: 200px 1fr;
+      min-height: 420px;
     }
 
-    .sidebar {
+    .preview-sidebar {
+      padding: 20px 0;
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
-    .sidebar-item {
-      padding: 10px 14px;
-      border-radius: 8px;
+    .preview-sidebar a {
+      padding: 10px 24px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-left: 2px solid transparent;
+    }
+
+    .preview-sidebar a:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .preview-sidebar a.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+      font-weight: 500;
+    }
+
+    .preview-content {
+      padding: 32px 36px;
+    }
+
+    .preview-content h4 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: -0.5px;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-row:last-child { border: none; }
+
+    .data-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .data-value {
+      font-family: 'DM Mono', monospace;
       font-size: 14px;
-      color: var(--text-dim);
-      cursor: pointer;
-      transition: all 0.2s;
+      font-weight: 400;
+      letter-spacing: -0.5px;
     }
 
-    .sidebar-item:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text);
-    }
-
-    .sidebar-item.active {
-      background: var(--accent-glow);
+    .data-value.up {
       color: var(--accent);
     }
 
-    .main-panel h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 24px;
+    .data-value.down {
+      color: var(--red);
     }
 
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
+    .data-value.amber {
+      color: var(--gold);
     }
 
-    .stat-row:last-child { border: none; }
+    /* === BOTTOM CTA === */
+    .cta-section {
+      text-align: center;
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
 
-    .stat-label { color: var(--text-dim); }
-    .stat-value { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
-    .stat-value.positive { color: var(--accent); }
-    .stat-value.negative { color: var(--red); }
-    .stat-value.warning { color: var(--gold); }
+    .cta-section h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 40px;
+      font-weight: 500;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 15px;
+      color: var(--text-tertiary);
+      margin-bottom: 36px;
+    }
 
     /* === FOOTER === */
     footer {
       border-top: 1px solid var(--border);
-      padding: 24px 0;
-      text-align: center;
-      color: var(--text-dim);
+      padding: 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer a {
       font-size: 13px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
-    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
 
-    /* === STAGGER ANIMATIONS === */
-    .stagger > * {
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+    }
+
+    /* === SCROLL ANIMATION === */
+    .reveal {
       opacity: 0;
-      animation: fadeUp 0.5s ease forwards;
+      transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
     }
 
-    .stagger > *:nth-child(1) { animation-delay: 0.1s; }
-    .stagger > *:nth-child(2) { animation-delay: 0.2s; }
-    .stagger > *:nth-child(3) { animation-delay: 0.3s; }
-    .stagger > *:nth-child(4) { animation-delay: 0.4s; }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* === RESPONSIVE === */
-    @media (max-width: 768px) {
-      .hero { padding: 120px 0 60px; }
-      .hero h1 { font-size: 32px; letter-spacing: -1px; }
-      .hero p { font-size: 16px; }
-      .dashboard-body { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .preview-body { grid-template-columns: 1fr; }
+      .preview-sidebar { flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); overflow-x: auto; }
+      .nav-links { gap: 24px; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 140px 0 80px; }
+      .hero h1 { font-size: 36px; }
+      .metrics { grid-template-columns: 1fr; }
       .nav-links { display: none; }
-      .cards { grid-template-columns: 1fr; }
+      .container { padding: 0 20px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-mesh"></div>
-  <div class="noise"></div>
+  <div class="bg-grain"></div>
 
   <!-- Navigation -->
-  <nav>
+  <nav id="nav">
     <div class="nav-inner">
-      <div class="logo">
-        <span class="logo-dot"></span>
-        TaxionLab
-      </div>
+      <a href="#" class="logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 3L33 18L18 33L3 18L18 3Z" stroke="#1a5c3a" stroke-width="1.5" fill="none"/>
+            <line x1="18" y1="8" x2="18" y2="28" stroke="#1a5c3a" stroke-width="1.2"/>
+            <line x1="8" y1="18" x2="28" y2="18" stroke="#1a5c3a" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">TaxionLab</span>
+          <span class="logo-tagline">Tax Intelligence</span>
+        </div>
+      </a>
       <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#demo">Demo</a>
-        <a href="http://localhost:8000/health" target="_blank">API Status</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#preview">Platform</a>
+        <a href="http://localhost:8000/health" target="_blank">System Status</a>
         <a href="http://localhost:8000/api/auth/hmrc/login" class="btn-primary">Connect HMRC</a>
       </div>
     </div>
@@ -506,21 +647,18 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="container">
+    <div class="container container--narrow">
       <div class="hero-badge">
-        <span class="badge-dot"></span>
-        AI-Powered Tax Automation
+        <span class="badge-line"></span>
+        Zero cost · Local AI · HMRC sandbox
       </div>
-      <h1>
-        Tax filings done by<br>
-        <span class="accent">local AI, for free.</span>
-      </h1>
-      <p>
-        Connect to HMRC sandbox. Upload documents. Let local Ollama AI extract data, calculate your tax, and find every legal saving. Zero cost. Zero cloud.
+      <h1>The future of tax<br>compliance is <span class="em">automated.</span></h1>
+      <p class="subhead">
+        Connect to HMRC. Upload documents. Our local AI extracts data, calculates obligations, and identifies every legal tax optimization — all running on your machine.
       </p>
       <div class="hero-actions">
         <a href="http://localhost:8000/api/auth/hmrc/login" class="btn-primary btn-lg">Connect to HMRC</a>
-        <a href="#demo" class="btn-outline">See Demo</a>
+        <a href="#preview" class="btn-ghost">See the platform →</a>
       </div>
     </div>
   </section>
@@ -529,139 +667,149 @@
   <div class="container">
     <div class="metrics">
       <div class="metric">
-        <div class="metric-value green">100%</div>
-        <div class="metric-label">Local AI Processing</div>
+        <div class="metric-number">100%</div>
+        <div class="metric-desc">Local processing — no cloud dependencies</div>
       </div>
       <div class="metric">
-        <div class="metric-value gold">£1,260</div>
-        <div class="metric-label">Max Marriage Allowance</div>
+        <div class="metric-number"><span class="gold">£1,260</span></div>
+        <div class="metric-desc">Marriage allowance savings identified</div>
       </div>
       <div class="metric">
-        <div class="metric-value blue">0</div>
-        <div class="metric-label">Monthly Cost</div>
+        <div class="metric-number">£0</div>
+        <div class="metric-desc">Monthly operating cost</div>
       </div>
       <div class="metric">
-        <div class="metric-value">Ollama</div>
-        <div class="metric-label">Local LLM Engine</div>
+        <div class="metric-number">UK + UAE</div>
+        <div class="metric-desc">Multi-jurisdiction tax intelligence</div>
       </div>
     </div>
   </div>
 
-  <!-- Features -->
-  <section class="section" id="features">
+  <!-- Capabilities -->
+  <section class="section" id="capabilities">
     <div class="container">
-      <div class="section-header">
-        <div class="section-label">// What it does</div>
-        <div class="section-title">Built for UK & UAE tax automation</div>
+      <div class="reveal">
+        <div class="section-label">Capabilities</div>
+        <div class="section-title">Engineered for accuracy,<br>designed for clarity.</div>
       </div>
-      <div class="cards stagger">
-        <div class="card">
-          <div class="card-icon green">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h3>Security-First by Design</h3>
-          <p>Pre-commit hooks scan every line for secrets, PII, and vulnerabilities. Nothing leaves your machine without passing the guardian.</p>
+      <div class="features">
+        <div class="feature reveal">
+          <div class="feature-number">01</div>
+          <h3>Security-by-default architecture</h3>
+          <p>Every line of code passes through automated security scanning before it touches the repository. Pre-commit hooks protect against secrets exposure and PII leakage.</p>
         </div>
-        <div class="card">
-          <div class="card-icon blue">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4"/></svg>
-          </div>
-          <h3>HMRC Sandbox Integration</h3>
-          <p>Full OAuth 2.0 flow with HMRC sandbox API. Fetch VAT periods, submit returns, and test everything without real money.</p>
+        <div class="feature reveal">
+          <div class="feature-number">02</div>
+          <h3>HMRC sandbox integration</h3>
+          <p>Full OAuth 2.0 authentication with HMRC's test environment. Fetch VAT periods, review submissions, and validate returns — all without financial risk.</p>
         </div>
-        <div class="card">
-          <div class="card-icon gold">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <h3>AI Tax Loophole Finder</h3>
-          <p>Chartered Accountant AI scans your financial data for every legal UK & UAE tax relief, allowance, and optimization available.</p>
+        <div class="feature reveal">
+          <div class="feature-number">03</div>
+          <h3>AI-powered tax optimization</h3>
+          <p>Our chartered accountant engine scans your financial profile against 12+ UK tax reliefs and UAE corporate structures to surface every legitimate saving opportunity.</p>
         </div>
-        <div class="card">
-          <div class="card-icon purple">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-          </div>
-          <h3>Document Extraction</h3>
-          <p>Upload payslips, invoices, P60s. Ollama AI extracts income, tax, NI, and deductions into structured JSON automatically.</p>
+        <div class="feature reveal">
+          <div class="feature-number">04</div>
+          <h3>Intelligent document processing</h3>
+          <p>Payslips, invoices, P60s — upload any tax document and our local Ollama engine extracts structured financial data automatically with confidence scoring.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Dashboard Demo -->
-  <section class="section" id="demo">
+  <!-- Platform Preview -->
+  <section class="section" id="preview">
     <div class="container">
-      <div class="section-header">
-        <div class="section-label">// Dashboard</div>
-        <div class="section-title">What you'll see</div>
+      <div class="reveal">
+        <div class="section-label">Platform Preview</div>
+        <div class="section-title">Complete tax intelligence in one view.</div>
       </div>
-      <div class="dashboard">
-        <div class="dashboard-bar">
-          <div class="dot red"></div>
-          <div class="dot yellow"></div>
-          <div class="dot green"></div>
+      <br><br>
+      <div class="preview reveal">
+        <div class="preview-header">
+          <span class="preview-header-title">Tax Overview</span>
+          <span class="preview-header-badge">FY 2024–25</span>
         </div>
-        <div class="dashboard-body">
-          <div class="sidebar">
-            <div class="sidebar-item active">Overview</div>
-            <div class="sidebar-item">HMRC VAT</div>
-            <div class="sidebar-item">Documents</div>
-            <div class="sidebar-item">CA Advice</div>
-            <div class="sidebar-item">Submissions</div>
+        <div class="preview-body">
+          <div class="preview-sidebar">
+            <a href="#" class="active">Overview</a>
+            <a href="#">VAT Returns</a>
+            <a href="#">Documents</a>
+            <a href="#">CA Recommendations</a>
+            <a href="#">Submissions</a>
+            <a href="#">Settings</a>
           </div>
-          <div class="main-panel">
-            <h3>Tax Summary — FY 2024-25</h3>
-            <div class="stat-row">
-              <span class="stat-label">Employment Income</span>
-              <span class="stat-value">£52,000.00</span>
+          <div class="preview-content">
+            <h4>Annual Tax Position</h4>
+            <div class="data-row">
+              <span class="data-label">Employment income</span>
+              <span class="data-value">£52,000.00</span>
             </div>
-            <div class="stat-row">
-              <span class="stat-label">Tax Owed (Income Tax)</span>
-              <span class="stat-value negative">−£7,827.00</span>
+            <div class="data-row">
+              <span class="data-label">Income tax liability</span>
+              <span class="data-value down">−£7,827.00</span>
             </div>
-            <div class="stat-row">
-              <span class="stat-label">National Insurance</span>
-              <span class="stat-value negative">−£2,695.60</span>
+            <div class="data-row">
+              <span class="data-label">National insurance</span>
+              <span class="data-value down">−£2,695.60</span>
             </div>
-            <div class="stat-row">
-              <span class="stat-label">Effective Tax Rate</span>
-              <span class="stat-value warning">20.2%</span>
+            <div class="data-row">
+              <span class="data-label">Effective tax rate</span>
+              <span class="data-value amber">20.2%</span>
             </div>
-            <div class="stat-row">
-              <span class="stat-label">Potential Savings (CA Found)</span>
-              <span class="stat-value positive">+£1,520.00</span>
+            <div class="data-row">
+              <span class="data-label">Potential savings identified</span>
+              <span class="data-value up">+£1,520.00</span>
             </div>
-            <div class="stat-row">
-              <span class="stat-label">Marriage Allowance</span>
-              <span class="stat-value positive">+£252.00</span>
+            <div class="data-row">
+              <span class="data-label">Pension tax relief</span>
+              <span class="data-value up">+£968.00</span>
             </div>
-            <div class="stat-row">
-              <span class="stat-label">Pension Tax Relief</span>
-              <span class="stat-value positive">+£968.00</span>
+            <div class="data-row">
+              <span class="data-label">Marriage allowance eligible</span>
+              <span class="data-value up">+£252.00</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Bottom CTA -->
+  <div class="container">
+    <div class="cta-section reveal">
+      <h2>Start optimising your tax<br>position today.</h2>
+      <p>Connect to the HMRC sandbox and see your tax position in under 5 minutes.</p>
+      <a href="http://localhost:8000/api/auth/hmrc/login" class="btn-primary btn-lg">Connect to HMRC</a>
+    </div>
+  </div>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      Built with
-      <a href="https://developer.service.hmrc.gov.uk" target="_blank">HMRC Sandbox</a>
-      ·
-      <a href="https://ollama.com" target="_blank">Ollama</a>
-      ·
-      FastAPI
-      ·
-      Next.js
-    </div>
-  </footer>
+  <div class="container">
+    <footer>
+      <div>
+        <a href="https://developer.service.hmrc.gov.uk" target="_blank">HMRC API</a>
+        <span style="color:var(--border-strong); margin: 0 8px">·</span>
+        <a href="https://ollama.com" target="_blank">Ollama</a>
+        <span style="color:var(--border-strong); margin: 0 8px">·</span>
+        <a href="#">FastAPI</a>
+      </div>
+      <div class="footer-right">
+        c 2025 TaxionLab
+      </div>
+    </footer>
+  </div>
 
   <script>
-    // Smooth scroll for anchor links
+    // Navbar scroll behavior
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
+      anchor.addEventListener('click', function(e) {
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
           e.preventDefault();
@@ -670,22 +818,19 @@
       });
     });
 
-    // Intersection Observer for scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.1 });
+    // Intersection Observer for scroll reveals
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
 
-    document.querySelectorAll('.card, .section-header, .metrics').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(16px)';
-      el.style.transition = 'all 0.6s ease';
-      observer.observe(el);
-    });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
