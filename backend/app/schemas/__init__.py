@@ -8,8 +8,13 @@ from app.schemas.tax import (
 from app.schemas.ca import CAAdviceRequest, CAAdviceResponse
 
 __all__ = [
-    'UserCreate', 'UserResponse', 'TokenResponse',
-    'DocumentUploadResponse', 'DocumentResponse',
-    'TaxCalculationRequest', 'TaxCalculationResponse',
-    'CAAdviceRequest', 'CAAdviceResponse'
+    "UserCreate",
+    "UserResponse",
+    "TokenResponse",
+    "DocumentUploadResponse",
+    "DocumentResponse",
+    "TaxCalculationRequest",
+    "TaxCalculationResponse",
+    "CAAdviceRequest",
+    "CAAdviceResponse",
 ]
