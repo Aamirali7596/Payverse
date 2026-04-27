@@ -9,7 +9,7 @@ python-multipart>=0.0.6
 # Database
 sqlalchemy>=2.0.23
 alembic>=1.12.1
-aiosqlite>=0.19.0
+aiosqlite>=0.22.1
 
 # AI / ML
 ollama>=0.1.7
